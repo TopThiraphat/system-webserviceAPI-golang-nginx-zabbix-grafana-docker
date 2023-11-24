@@ -1,0 +1,109 @@
+#####################################################################################
+version: "3.9"
+#####################################################################################
+services:
+  #####################################################################################
+  zabbix-server: # ไม่มี database แค่เป็นตัวเชื่อมกับ postgres
+    container_name: ${ENV_NAME_ZABBIX_SERVER}
+    image: ${ENV_IMAGE_ZABBIX_SERVER}
+    networks:
+      backend:
+        ipv4_address: ${ENV_IP_ZABBIX_SERVER}
+    environment:
+      DB_SERVER_HOST: ${ENV_IP_DB_ZABBIX}
+      DB_SERVER_PORT: ${ENV_DB_PORT}
+      POSTGRES_USER_FILE: /run/secrets/db_zabbix_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_zabbix_password
+      POSTGRES_DB: ${ENV_DB_ZABBIX}
+      ZBX_HISTORYSTORAGETYPES: log,text
+      ZBX_DEBUGLEVEL: 1
+      ZBX_HOUSEKEEPINGFREQUENCY: 1
+      ZBX_MAXHOUSEKEEPERDELETE: 5000
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+
+      # - ./zabbix/export:/var/lib/zabbix/export
+      # - ./zabbix/snmptraps:/var/lib/zabbix/snmptraps
+      # - ./zabbix/alertscripts:/usr/lib/zabbix/alertscripts
+
+      - ./zabbix/zabbix_server/alertscripts:/usr/lib/zabbix/alertscripts:ro
+      - ./zabbix/zabbix_server/externalscripts:/usr/lib/zabbix/externalscripts:ro
+      - ./zabbix/zabbix_server/export:/var/lib/zabbix/export:rw
+      - ./zabbix/zabbix_server/modules:/var/lib/zabbix/modules:ro
+      - ./zabbix/zabbix_server/enc:/var/lib/zabbix/enc:ro
+      - ./zabbix/zabbix_server/ssh_keys:/var/lib/zabbix/ssh_keys:ro
+      - ./zabbix/zabbix_server/mibs:/var/lib/zabbix/mibs:ro
+      - ./zabbix/zabbix_server/snmptraps:/var/lib/zabbix/snmptraps:ro
+
+    restart: always
+    secrets:
+      - db_zabbix_user
+      - db_zabbix_password
+  #####################################################################################
+  zabbix-web:
+    container_name: ${ENV_NAME_ZABBIX_WEB}
+    build:
+      dockerfile: zabbix_web.Dockerfile
+      context: .
+    image: ${ENV_IMAGE_ZABBIX_WEB}
+    networks:
+      backend:
+        ipv4_address: ${ENV_IP_ZABBIX_WEB}
+    environment:
+      DB_SERVER_HOST: ${ENV_IP_DB_ZABBIX}
+      DB_SERVER_PORT: ${ENV_DB_PORT}
+      POSTGRES_USER_FILE: /run/secrets/db_zabbix_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_zabbix_password
+      POSTGRES_DB: ${ENV_DB_ZABBIX}
+      ZBX_SERVER_HOST: zabbix-server
+      ZBX_POSTMAXSIZE: 64M
+      PHP_TZ: "Asia/Bangkok"
+      ZBX_MAXEXECUTIONTIME: 500
+    restart: always
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+      - ./zabbix/zabbix_web/nginx:/etc/ssl/nginx:ro
+      - ./zabbix/zabbix_web/modules/:/usr/share/zabbix/modules/:ro
+    depends_on:
+      - zabbix-server
+    secrets:
+      - db_zabbix_user
+      - db_zabbix_password
+  #####################################################################################
+  zabbix-agent:
+    container_name: ${ENV_NAME_ZABBIX_AGENT}
+    image: ${ENV_IMAGE_ZABBIX_AGENT}
+    # networks:
+    #   backend:
+    #     ipv4_address: ${ENV_IP_ZABBIX_AGENT}
+    privileged: true
+    network_mode: "host"
+    environment:
+      - ZBX_SERVER_HOST=127.0.0.1
+    restart: always
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+      - ./zabbix/zabbix_agent/zabbix_agentd.d:/etc/zabbix/zabbix_agentd.d:ro
+      - ./zabbix/zabbix_agent/modules:/var/lib/zabbix/modules:ro
+      - ./zabbix/zabbix_agent/enc:/var/lib/zabbix/enc:ro
+      - ./zabbix/zabbix_agent/ssh_keys:/var/lib/zabbix/ssh_keys:ro
+
+    depends_on:
+      - zabbix-server
+      - zabbix-web
+  #####################################################################################
+networks:
+  backend:
+    name: network
+#####################################################################################
+secrets:
+  db_zabbix_user:
+    file: ./database/secrets/secrets_zabbix/db_zabbix_user.txt
+  db_zabbix_password:
+    file: ./database/secrets/secrets_zabbix/db_zabbix_password.txt
+#####################################################################################

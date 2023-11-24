@@ -1,0 +1,78 @@
+#####################################################################################
+version: "3.8"
+#####################################################################################
+services:
+  #####################################################################################
+  grafana:
+    container_name: ${ENV_NAME_GRAFANA}
+    build:
+      dockerfile: grafana.Dockerfile
+      context: .
+    image: ${ENV_IMAGE_GRAFANA}
+    environment:
+      GF_DATABASE_TYPE: postgres
+      GF_DATABASE_HOST: ${ENV_IP_DB_GRAFANA}:${ENV_DB_PORT}
+      GF_DATABASE_NAME: ${ENV_DB_GRAFANA}
+      GF_DATABASE_USER: ${ENV_DB_GRAFANA_USERNAME}
+      GF_DATABASE_PASSWORD: ${ENV_DB_GRAFANA_PASSWORD}
+
+      # ไม่รองรับโดยตรงใน Docker Compose GF_DATABASE_USER_FILE: /run/secrets/db_grafana_user
+      # ไม่รองรับโดยตรงใน Docker Compose GF_DATABASE_PASSWORD_FILE: /run/secrets/db_grafana_password
+
+      GF_DATABASE_SSL_MODE: disable
+
+      # GF_INSTALL_DATASOURCES: alexanderzobnin-zabbix-app
+      # GF_INSTALL_PLUGINS: grafana-clock-panel
+
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+      - ./grafana/config/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - ./grafana/volumes/grafana:/var/lib/grafana
+    networks:
+      backend:
+        ipv4_address: ${ENV_IP_GRAFANA}
+    restart: always
+  #####################################################################################
+  loki:
+    container_name: ${ENV_NAME_LOKI}
+    build:
+      dockerfile: loki.Dockerfile
+      context: .
+    image: ${ENV_IMAGE_LOKI}
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+      - ./grafana/volumes/loki:/loki
+    networks:
+      backend:
+        ipv4_address: ${ENV_IP_LOKI}
+    restart: always
+
+  #####################################################################################
+  promtail:
+    container_name: ${ENV_NAME_PROMTAIL}
+    image: ${ENV_IMAGE_PROMTAIL}
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+      - ./grafana/config/promtail.yaml:/etc/promtail/docker-config.yaml
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: -config.file=/etc/promtail/docker-config.yaml
+    networks:
+      backend:
+        ipv4_address: ${ENV_IP_PROMTAIL}
+    depends_on:
+      - loki
+    restart: always
+#####################################################################################
+networks:
+  backend:
+    name: network
+#####################################################################################
+

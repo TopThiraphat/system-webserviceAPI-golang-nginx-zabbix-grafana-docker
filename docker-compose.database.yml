@@ -1,0 +1,86 @@
+#####################################################################################
+version: "3"
+#####################################################################################
+services:
+  #####################################################################################
+  db_pg_zabbix:
+    container_name: ${ENV_NAME_DB_ZABBIX}
+    image: ${ENV_IMAGE_DB}
+    networks:
+      backend:
+        ipv4_address: ${ENV_IP_DB_ZABBIX}
+    environment:
+      POSTGRES_USER_FILE: /run/secrets/db_zabbix_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_zabbix_password
+      POSTGRES_DB: ${ENV_DB_ZABBIX}
+      PG_DATA: /var/lib/postgresql/data
+    restart: always
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+      - ./database/db_pg_zabbix:/var/lib/postgresql/data
+    secrets:
+      - db_zabbix_user
+      - db_zabbix_password
+  #####################################################################################
+  db_pg_grafana:
+    container_name: ${ENV_NAME_DB_GRAFANA}
+    image: ${ENV_IMAGE_DB}
+    networks:
+      backend:
+        ipv4_address: ${ENV_IP_DB_GRAFANA}
+    environment:
+      POSTGRES_USER_FILE: /run/secrets/db_grafana_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_grafana_password
+      POSTGRES_DB: ${ENV_DB_GRAFANA}
+      PG_DATA: /var/lib/postgresql/data
+    restart: always
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+      - ./database/db_pg_grafana:/var/lib/postgresql/data
+    depends_on:
+      - db_pg_zabbix
+    secrets:
+      - db_grafana_user
+      - db_grafana_password
+  #####################################################################################
+  adminer:
+    container_name: ${ENV_NAME_ADMINER}
+    build:
+      dockerfile: adminer.Dockerfile
+      context: .
+    image: ${ENV_IMAGE_ADMINER}
+    environment:
+      # ADMINER_DEFAULT_SERVER: mysql_db_container
+      ADMINER_DESIGN: dracula
+    networks:
+      backend:
+        ipv4_address: ${ENV_IP_ADMINER}
+    restart: always
+    # ports:
+    #   - 8080:8080
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - db_pg_zabbix
+      - db_pg_grafana
+#####################################################################################
+networks:
+  backend:
+    name: network
+#####################################################################################
+secrets:
+  db_zabbix_user:
+    file: ./database/secrets/secrets_zabbix/db_zabbix_user.txt
+  db_zabbix_password:
+    file: ./database/secrets/secrets_zabbix/db_zabbix_password.txt
+
+  db_grafana_user:
+    file: ./database/secrets/secrets_grafana/db_grafana_user.txt
+  db_grafana_password:
+    file: ./database/secrets/secrets_grafana/db_grafana_password.txt
+#####################################################################################

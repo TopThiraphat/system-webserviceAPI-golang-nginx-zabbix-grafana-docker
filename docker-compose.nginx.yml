@@ -1,0 +1,108 @@
+#####################################################################################
+version: "3.9"
+#####################################################################################
+services:
+  #####################################################################################
+  nginx:
+    container_name: ${ENV_NAME_NGINX}
+    build:
+      dockerfile: nginx.Dockerfile
+      context: .
+    image: ${ENV_IMAGE_NGINX}
+    labels:
+      logging: "promtail" # เพื่อแจ้งให้ promtail ทราบว่าบันทึกของคอนเทนเนอร์ล็อกนี้จะถูกคัดลอก
+      logging_jobname: "containerlogs" # กำหนดคอนเทนเนอร์ล็อกให้กับป้ายกำกับงาน
+    ports:
+      - "80:80"
+      - "20102:20102"
+      - "20221:20221"
+      - "22343:22343"
+      - "22817:22817"
+    networks:
+      backend:
+        ipv4_address: ${ENV_IP_NGINX}
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+      - ./nginx/server/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/server/nginx/network_internal.conf:/etc/nginx/network_internal.conf
+      - ./nginx/server/nginx/nginx.conf:/etc/nginx/nginx.conf
+
+      - ./nginx/logs/logs_nginx_webservice_api/access/nginx_webservice_api.access.log:/var/log/nginx/nginx_webservice_api.access.log
+      - ./nginx/logs/logs_nginx_webservice_api/error/nginx_webservice_api.error.log:/var/log/nginx/nginx_webservice_api.error.log
+
+      - ./nginx/logs/logs_nginx_portainer/access/nginx_portainer.access.log:/var/log/nginx/nginx_portainer.access.log
+      - ./nginx/logs/logs_nginx_portainer/error/nginx_portainer.error.log:/var/log/nginx/nginx_portainer.error.log
+
+      # - ./nginx/WAF/modsecurity/main.conf:/etc/nginx/modsecurity/main.conf
+      - ./nginx/WAF/modsecurity/modsecurity.conf:/etc/nginx/modsecurity/modsecurity.conf
+      # - ./nginx/WAF/modsecurity/unicode.mapping:/etc/nginx/modsecurity/unicode.mapping
+
+      - ./nginx/WAF/modsecurity/crs-setup.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/crs-setup.conf
+
+      - ./nginx/WAF/modsecurity/roles/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf
+      - ./nginx/WAF/modsecurity/roles/REQUEST-901-INITIALIZATION.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-901-INITIALIZATION.conf
+      - ./nginx/WAF/modsecurity/roles/REQUEST-903.9001-DRUPAL-EXCLUSION-RULES.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-903.9001-DRUPAL-EXCLUSION-RULES.conf
+      - ./nginx/WAF/modsecurity/roles/REQUEST-903.9002-WORDPRESS-EXCLUSION-RULES.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-903.9002-WORDPRESS-EXCLUSION-RULES.conf
+      - ./nginx/WAF/modsecurity/roles/REQUEST-903.9003-NEXTCLOUD-EXCLUSION-RULES.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-903.9003-NEXTCLOUD-EXCLUSION-RULES.conf
+      - ./nginx/WAF/modsecurity/roles/REQUEST-903.9004-DOKUWIKI-EXCLUSION-RULES.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-903.9004-DOKUWIKI-EXCLUSION-RULES.conf
+      - ./nginx/WAF/modsecurity/roles/REQUEST-903.9005-CPANEL-EXCLUSION-RULES.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-903.9005-CPANEL-EXCLUSION-RULES.conf
+      - ./nginx/WAF/modsecurity/roles/REQUEST-903.9006-XENFORO-EXCLUSION-RULES.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-903.9006-XENFORO-EXCLUSION-RULES.conf
+      - ./nginx/WAF/modsecurity/roles/REQUEST-905-COMMON-EXCEPTIONS.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-905-COMMON-EXCEPTIONS.conf
+      - ./nginx/WAF/modsecurity/roles/REQUEST-910-IP-REPUTATION.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-910-IP-REPUTATION.conf
+      - ./nginx/WAF/modsecurity/roles/REQUEST-911-METHOD-ENFORCEMENT.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-911-METHOD-ENFORCEMENT.conf
+      - ./nginx/WAF/modsecurity/roles/REQUEST-912-DOS-PROTECTION.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-912-DOS-PROTECTION.conf
+      - ./nginx/WAF/modsecurity/roles/REQUEST-913-SCANNER-DETECTION.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-913-SCANNER-DETECTION.conf
+      - ./nginx/WAF/modsecurity/roles/REQUEST-920-PROTOCOL-ENFORCEMENT.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-920-PROTOCOL-ENFORCEMENT.conf
+      - ./nginx/WAF/modsecurity/roles/REQUEST-921-PROTOCOL-ATTACK.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-921-PROTOCOL-ATTACK.conf
+      - ./nginx/WAF/modsecurity/roles/REQUEST-930-APPLICATION-ATTACK-LFI.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-930-APPLICATION-ATTACK-LFI.conf
+      - ./nginx/WAF/modsecurity/roles/REQUEST-931-APPLICATION-ATTACK-RFI.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-931-APPLICATION-ATTACK-RFI.conf
+      - ./nginx/WAF/modsecurity/roles/REQUEST-932-APPLICATION-ATTACK-RCE.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-932-APPLICATION-ATTACK-RCE.conf
+      - ./nginx/WAF/modsecurity/roles/REQUEST-933-APPLICATION-ATTACK-PHP.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-933-APPLICATION-ATTACK-PHP.conf
+      - ./nginx/WAF/modsecurity/roles/REQUEST-934-APPLICATION-ATTACK-NODEJS.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-934-APPLICATION-ATTACK-NODEJS.conf
+      - ./nginx/WAF/modsecurity/roles/REQUEST-941-APPLICATION-ATTACK-XSS.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-941-APPLICATION-ATTACK-XSS.conf
+      - ./nginx/WAF/modsecurity/roles/REQUEST-942-APPLICATION-ATTACK-SQLI.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-942-APPLICATION-ATTACK-SQLI.conf
+      - ./nginx/WAF/modsecurity/roles/REQUEST-943-APPLICATION-ATTACK-SESSION-FIXATION.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-943-APPLICATION-ATTACK-SESSION-FIXATION.conf
+      - ./nginx/WAF/modsecurity/roles/REQUEST-944-APPLICATION-ATTACK-JAVA.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-944-APPLICATION-ATTACK-JAVA.conf
+      - ./nginx/WAF/modsecurity/roles/REQUEST-949-BLOCKING-EVALUATION.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/REQUEST-949-BLOCKING-EVALUATION.conf
+
+      - ./nginx/WAF/modsecurity/roles/RESPONSE-950-DATA-LEAKAGES.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/RESPONSE-950-DATA-LEAKAGES.conf
+      - ./nginx/WAF/modsecurity/roles/RESPONSE-951-DATA-LEAKAGES-SQL.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/RESPONSE-951-DATA-LEAKAGES-SQL.conf
+      - ./nginx/WAF/modsecurity/roles/RESPONSE-952-DATA-LEAKAGES-JAVA.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/RESPONSE-952-DATA-LEAKAGES-JAVA.conf
+      - ./nginx/WAF/modsecurity/roles/RESPONSE-953-DATA-LEAKAGES-PHP.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/RESPONSE-953-DATA-LEAKAGES-PHP.conf
+      - ./nginx/WAF/modsecurity/roles/RESPONSE-954-DATA-LEAKAGES-IIS.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/RESPONSE-954-DATA-LEAKAGES-IIS.conf
+      - ./nginx/WAF/modsecurity/roles/RESPONSE-959-BLOCKING-EVALUATION.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/RESPONSE-959-BLOCKING-EVALUATION.conf
+      - ./nginx/WAF/modsecurity/roles/RESPONSE-980-CORRELATION.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/RESPONSE-980-CORRELATION.conf
+      - ./nginx/WAF/modsecurity/roles/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf
+
+      - ./nginx/WAF/modsecurity/roles/crawlers-user-agents.data:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/crawlers-user-agents.data
+      - ./nginx/WAF/modsecurity/roles/iis-errors.data:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/iis-errors.data
+      - ./nginx/WAF/modsecurity/roles/java-classes.data:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/java-classes.data
+      - ./nginx/WAF/modsecurity/roles/java-code-leakages.data:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/java-code-leakages.data
+      - ./nginx/WAF/modsecurity/roles/java-errors.data:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/java-errors.data
+      - ./nginx/WAF/modsecurity/roles/lfi-os-files.data:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/lfi-os-files.data
+      - ./nginx/WAF/modsecurity/roles/php-config-directives.data:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/php-config-directives.data
+      - ./nginx/WAF/modsecurity/roles/php-errors.data:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/php-errors.data
+      - ./nginx/WAF/modsecurity/roles/php-function-names-933150.data:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/php-function-names-933150.data
+      - ./nginx/WAF/modsecurity/roles/php-function-names-933151.data:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/php-function-names-933151.data
+      - ./nginx/WAF/modsecurity/roles/php-variables.data:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/php-variables.data
+      - ./nginx/WAF/modsecurity/roles/restricted-files.data:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/restricted-files.data
+      - ./nginx/WAF/modsecurity/roles/restricted-upload.data:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/restricted-upload.data
+      - ./nginx/WAF/modsecurity/roles/scanners-headers.data:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/scanners-headers.data
+      - ./nginx/WAF/modsecurity/roles/scanners-urls.data:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/scanners-urls.data
+      - ./nginx/WAF/modsecurity/roles/scanners-user-agents.data:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/scanners-user-agents.data
+      - ./nginx/WAF/modsecurity/roles/scripting-user-agents.data:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/scripting-user-agents.data
+      - ./nginx/WAF/modsecurity/roles/sql-errors.data:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/sql-errors.data
+      - ./nginx/WAF/modsecurity/roles/unix-shell.data:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/unix-shell.data
+      - ./nginx/WAF/modsecurity/roles/windows-powershell-commands.data:/usr/local/owasp-modsecurity-crs-${OWASP_CRS_VERSION}/rules/windows-powershell-commands.data
+
+      - ./nginx/logs/logs_nginx_modsecurity/audit/nginx_modsecurity.audit.log:/var/log/modsec-audit.log
+
+      - ./nginx/logs/logs_nginx_modsecurity/debug/nginx_modsecurity.debug.log:/var/log/modsec-debug.log
+    restart: always
+#####################################################################################
+networks:
+  backend:
+    name: network
+######################################################################################

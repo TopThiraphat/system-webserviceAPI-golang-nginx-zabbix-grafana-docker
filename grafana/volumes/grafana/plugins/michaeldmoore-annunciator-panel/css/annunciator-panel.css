@@ -1,0 +1,116 @@
+.michaeldmoore-annunciator-panel-w3 {
+  width: 2.25rem;
+  height: 37px;
+  margin-right: .25rem;
+  margin-bottom: 0px;
+}
+
+.michaeldmoore-annunciator-panel-w4 {
+  width: 3.75rem;
+  height: 37px;
+  margin-right: .25rem;
+  margin-bottom: 0px;
+}
+
+.michaeldmoore-annunciator-panel-w5 {
+  width: 4.75rem;
+  height: 37px;
+  margin-right: .25rem;
+  margin-bottom: 0px;
+}
+
+.michaeldmoore-annunciator-panel-w6 {
+  width: 5.75rem;
+  height: 37px;
+  margin-right: .25rem;
+  margin-bottom: 0px;
+}
+
+.michaeldmoore-annunciator-panel-w7 {
+  width: 6.75rem;
+  height: 37px;
+  margin-right: .25rem;
+  margin-bottom: 0px;
+}
+
+.michaeldmoore-annunciator-panel-centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+}
+
+.michaeldmoore-annunciator-panel-w9 {
+  width: 8.75rem;
+  height: 37px;
+  margin-right: .25rem;
+  margin-bottom: 0px;
+}
+
+.michaeldmoore-annunciator-panel-w19 {
+  width: 19.00rem;
+  height: 37px;
+  margin-right: .25rem;
+  margin-bottom: 0px;
+}
+
+.michaeldmoore-annunciator-panel-container {
+  position: relative;
+  display: table;
+  width: 100%;
+}
+
+.michaeldmoore-annunciator-panel-value-container {
+  vertical-align: middle;
+  text-align: center;
+  position: relative;
+  font-size: 3em;
+  font-weight: bold;
+}
+
+.michaeldmoore-annunciator-panel-prefix {
+  padding: 20px;
+}
+
+.michaeldmoore-annunciator-panel-value {
+  padding: 0px;
+}
+
+.michaeldmoore-annunciator-panel-postfix {
+  padding-left: 20px;
+}
+
+.michaeldmoore-annunciator-panel-limits-container {
+  font-size: 3em;
+}
+
+.michaeldmoore-annunciator-panel-lower-limit {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.michaeldmoore-annunciator-panel-upper-limit {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+}
+
+.michaeldmoore-annunciator-flash {
+  animation: michaeldmoore-annunciator-flash 0.5s infinite;
+}
+
+@keyframes michaeldmoore-annunciator-flash {
+  0% { font-weight: 100}
+  100% { font-weight: 900}
+}
+
+.michaeldmoore-annunciator-shockandawe {
+  animation: michaeldmoore-annunciator-shockandawe 1.0s infinite;
+}
+
+@keyframes michaeldmoore-annunciator-shockandawe {
+  0% { font-size:1em;}
+  100% { font-size:4em;}
+}

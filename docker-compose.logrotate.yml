@@ -1,0 +1,179 @@
+#####################################################################################
+version: "3.9"
+#####################################################################################
+services:
+  #####################################################################################
+  backup_logs_nginx_webservice_api_access:
+    container_name: ${ENV_NAME_LOGROTATE_NGINX_WEBSERVICE_API_ACCESS}
+    image: ${ENV_IMAGE_LOGROTATE}
+    labels:
+      logging: "promtail" # เพื่อแจ้งให้ promtail ทราบว่าบันทึกของคอนเทนเนอร์ล็อกนี้จะถูกคัดลอก
+      logging_jobname: "containerlogs" # กำหนดคอนเทนเนอร์ล็อกให้กับป้ายกำกับงาน
+    networks:
+      backend:
+        ipv4_address: ${ENV_IP_LOGROTATE_NGINX_WEBSERVICE_API_ACCESS}
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+      - ./logrotate/backup_logs_nginx_webservice_api/access:/backup_logs_nginx_webservice_api/access
+      - ./nginx/logs/logs_nginx_webservice_api/access:/var/lib/docker/containers
+      - ./logrotate/backup_logs_nginx_webservice_api/logrotate_status_access:/logrotate-status
+
+    environment:
+      - "LOGS_DIRECTORIES=/var/lib/docker/containers/*.log"
+      - "LOGROTATE_COPIES=${ENV_LOGROTATE_COPIES}"
+      - "LOGROTATE_COMPRESSION=compress"
+      - "LOGROTATE_OLDDIR=/backup_logs_nginx_webservice_api/access"
+      - "LOGROTATE_DATEFORMAT=-%d%m%Y-%H:%M:%S"
+      - "LOGROTATE_CRONSCHEDULE=${ENV_LOGROTATE_TIME}"
+      - "LOGROTATE_PARAMETERS=f"
+      - "TZ=Asia/Bangkok"
+    restart: always
+  #####################################################################################
+  backup_logs_nginx_webservice_api_error:
+    container_name: ${ENV_NAME_LOGROTATE_NGINX_WEBSERVICE_API_ERROR}
+    image: ${ENV_IMAGE_LOGROTATE}
+    labels:
+      logging: "promtail"
+      logging_jobname: "containerlogs"
+    networks:
+      backend:
+        ipv4_address: ${ENV_IP_LOGROTATE_NGINX_WEBSERVICE_API_ERROR}
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+      - ./logrotate/backup_logs_nginx_webservice_api/error:/backup_logs_nginx_webservice_api/error
+      - ./nginx/logs/logs_nginx_webservice_api/error:/var/lib/docker/containers
+      - ./logrotate/backup_logs_nginx_webservice_api/logrotate_status_error:/logrotate-status
+
+    environment:
+      - "LOGS_DIRECTORIES=/var/lib/docker/containers/*.log"
+      - "LOGROTATE_COPIES=${ENV_LOGROTATE_COPIES}"
+      - "LOGROTATE_COMPRESSION=compress"
+      - "LOGROTATE_OLDDIR=/backup_logs_nginx_webservice_api/error"
+      - "LOGROTATE_DATEFORMAT=-%d%m%Y-%H:%M:%S"
+      - "LOGROTATE_CRONSCHEDULE=${ENV_LOGROTATE_TIME}"
+      - "LOGROTATE_PARAMETERS=f"
+      - "TZ=Asia/Bangkok"
+    restart: always
+  #####################################################################################
+  backup_logs_nginx_portainer_access:
+    container_name: ${ENV_NAME_LOGROTATE_NGINX_PORTAINER_ACCESS}
+    image: ${ENV_IMAGE_LOGROTATE}
+    labels:
+      logging: "promtail"
+      logging_jobname: "containerlogs"
+    networks:
+      backend:
+        ipv4_address: ${ENV_IP_LOGROTATE_NGINX_PORTAINER_ACCESS}
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+      - ./logrotate/backup_logs_nginx_portainer/access:/backup_logs_nginx_portainer/access
+      - ./nginx/logs/logs_nginx_portainer/access:/var/lib/docker/containers
+      - ./logrotate/backup_logs_nginx_portainer/logrotate_status_access:/logrotate-status
+
+    environment:
+      - "LOGS_DIRECTORIES=/var/lib/docker/containers/*.log"
+      - "LOGROTATE_COPIES=${ENV_LOGROTATE_COPIES}"
+      - "LOGROTATE_COMPRESSION=compress"
+      - "LOGROTATE_OLDDIR=/backup_logs_nginx_portainer/access"
+      - "LOGROTATE_DATEFORMAT=-%d%m%Y-%H:%M:%S"
+      - "LOGROTATE_CRONSCHEDULE=${ENV_LOGROTATE_TIME}"
+      - "LOGROTATE_PARAMETERS=f"
+      - "TZ=Asia/Bangkok"
+    restart: always
+  #####################################################################################
+  backup_logs_nginx_portainer_error:
+    container_name: ${ENV_NAME_LOGROTATE_NGINX_PORTAINER_ERROR}
+    image: ${ENV_IMAGE_LOGROTATE}
+    labels:
+      logging: "promtail"
+      logging_jobname: "containerlogs"
+    networks:
+      backend:
+        ipv4_address: ${ENV_IP_LOGROTATE_NGINX_PORTAINER_ERROR}
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+      - ./logrotate/backup_logs_nginx_portainer/error:/backup_logs_nginx_portainer/error
+      - ./nginx/logs/logs_nginx_portainer/error:/var/lib/docker/containers
+      - ./logrotate/backup_logs_nginx_portainer/logrotate_status_error:/logrotate-status
+
+    environment:
+      - "LOGS_DIRECTORIES=/var/lib/docker/containers/*.log"
+      - "LOGROTATE_COPIES=${ENV_LOGROTATE_COPIES}"
+      - "LOGROTATE_COMPRESSION=compress"
+      - "LOGROTATE_OLDDIR=/backup_logs_nginx_portainer/error"
+      - "LOGROTATE_DATEFORMAT=-%d%m%Y-%H:%M:%S"
+      - "LOGROTATE_CRONSCHEDULE=${ENV_LOGROTATE_TIME}"
+      - "LOGROTATE_PARAMETERS=f"
+      - "TZ=Asia/Bangkok"
+    restart: always
+  #####################################################################################
+  backup_logs_nginx_modsecurity_audit:
+    container_name: ${ENV_NAME_LOGROTATE_NGINX_MODSECURITY_AUDIT}
+    image: ${ENV_IMAGE_LOGROTATE}
+    labels:
+      logging: "promtail"
+      logging_jobname: "containerlogs"
+    networks:
+      backend:
+        ipv4_address: ${ENV_IP_LOGROTATE_NGINX_MODSECURITY_AUDIT}
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+      - ./logrotate/backup_logs_nginx_modsecurity/audit:/backup_logs_nginx_modsecurity/audit
+      - ./nginx/logs/logs_nginx_modsecurity/audit:/var/lib/docker/containers
+      - ./logrotate/backup_logs_nginx_modsecurity/logrotate_status_audit:/logrotate-status
+
+    environment:
+      - "LOGS_DIRECTORIES=/var/lib/docker/containers/*.log"
+      - "LOGROTATE_COPIES=${ENV_LOGROTATE_COPIES}"
+      - "LOGROTATE_COMPRESSION=compress"
+      - "LOGROTATE_OLDDIR=/backup_logs_nginx_modsecurity/audit"
+      - "LOGROTATE_DATEFORMAT=-%d%m%Y-%H:%M:%S"
+      - "LOGROTATE_CRONSCHEDULE=${ENV_LOGROTATE_TIME}"
+      - "LOGROTATE_PARAMETERS=f"
+      - "TZ=Asia/Bangkok"
+    restart: always
+  #####################################################################################
+  backup_logs_nginx_modsecurity_debug:
+    container_name: ${ENV_NAME_LOGROTATE_NGINX_MODSECURITY_DEBUG}
+    image: ${ENV_IMAGE_LOGROTATE}
+    labels:
+      logging: "promtail"
+      logging_jobname: "containerlogs"
+    networks:
+      backend:
+        ipv4_address: ${ENV_IP_LOGROTATE_NGINX_MODSECURITY_DEBUG}
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+      - ./logrotate/backup_logs_nginx_modsecurity/debug:/backup_logs_nginx_modsecurity/debug
+      - ./nginx/logs/logs_nginx_modsecurity/debug:/var/lib/docker/containers
+      - ./logrotate/backup_logs_nginx_modsecurity/logrotate_status_debug:/logrotate-status
+
+    environment:
+      - "LOGS_DIRECTORIES=/var/lib/docker/containers/*.log"
+      - "LOGROTATE_COPIES=${ENV_LOGROTATE_COPIES}"
+      - "LOGROTATE_COMPRESSION=compress"
+      - "LOGROTATE_OLDDIR=/backup_logs_nginx_modsecurity/debug"
+      - "LOGROTATE_DATEFORMAT=-%d%m%Y-%H:%M:%S"
+      - "LOGROTATE_CRONSCHEDULE=${ENV_LOGROTATE_TIME}"
+      - "LOGROTATE_PARAMETERS=f"
+      - "TZ=Asia/Bangkok"
+    restart: always
+#####################################################################################
+
+networks:
+  backend:
+    name: network
+#######################################################################################
+

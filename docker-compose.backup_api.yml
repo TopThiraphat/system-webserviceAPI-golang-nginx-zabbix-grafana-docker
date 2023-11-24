@@ -1,0 +1,24 @@
+#####################################################################################
+version: "3.9"
+#####################################################################################
+services:
+  #####################################################################################
+  backup_api:
+    container_name: ${ENV_NAME_BACKUP_API}
+    build:
+      dockerfile: backup_api.Dockerfile
+      context: .
+      target: dev
+    image: ${ENV_IMAGE_NODE}
+    networks:
+      backend:
+        ipv4_address: ${ENV_IP_BACKUP_API}
+    volumes:
+      - ./backup_api:/app
+    restart: always
+  #####################################################################################
+networks:
+  backend:
+    name: network
+############################################################
+

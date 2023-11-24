@@ -1,0 +1,29 @@
+#####################################################################################
+version: "3.9"
+#####################################################################################
+services:
+  #####################################################################################
+  webservice_api:
+    container_name: ${ENV_NAME_WEBSERVICE_API}
+    build:
+      dockerfile: webservice_api.Dockerfile
+      context: .
+      target: prod
+    image: ${ENV_IMAGE_UBUNTU}
+    labels:
+      logging: "promtail" # เพื่อแจ้งให้ promtail ทราบว่าบันทึกของคอนเทนเนอร์ล็อกนี้จะถูกคัดลอก
+      logging_jobname: "containerlogs" # กำหนดคอนเทนเนอร์ล็อกให้กับป้ายกำกับงาน
+    networks:
+      backend:
+        ipv4_address: ${ENV_IP_WEBSERVICE_API}
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+      - ./webservice_api:/app
+    restart: always
+#####################################################################################
+networks:
+  backend:
+    name: network
+#####################################################################################
