@@ -20,7 +20,7 @@
     - nginx
     - logrotate
 - **Database**
-    - postgresql
+    - postgreSQL
 - **Database Management System**
     - adminer
 - **Web Application Firewall**
