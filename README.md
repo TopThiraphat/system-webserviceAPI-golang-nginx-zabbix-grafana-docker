@@ -29,6 +29,9 @@
     - loki 
     - promtail
 
+![App Screenshot](./screenshots/flowchart.png)
+
+
 ## Get Started
 1. install Docker
 - [Installation Docker](https://docs.docker.com/engine/install/)
