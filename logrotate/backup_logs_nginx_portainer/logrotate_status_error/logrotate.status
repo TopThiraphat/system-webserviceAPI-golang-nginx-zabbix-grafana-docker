@@ -1,2 +1,2 @@
 logrotate state -- version 2
-"/var/lib/docker/containers/nginx_portainer.error.log" 2023-11-24-21:49:0
+"/var/lib/docker/containers/nginx_portainer.error.log" 2024-2-15-16:37:0

@@ -1,36 +1,38 @@
 # webserviceAPI-golang-nginx-zabbix-grafana-docker
 
-- เป็นระบบ WebserviceAPI ที่พัฒนาด้วย Golang โดยใช้ Go web framework ที่ชื่อว่า Fiber
-- โดยระบบ WebserviceAPI ใช้ Nginx ในทำการ Webserver ,reverse proxy
-- มี software ที่ช่วย monitoring WebserviceAPI เช่น zabbix ,grafana
-- มี software ที่ช่วย backup filelog เช่น logrotate linux
-- ใช้ฐานข้อมูล PostgreSQL และใช้ DBMS เช่น adminer สำหรับการบริหารจัดการฐานข้อมูล
-- โดยระบบทั้งหมด deploy บน virtualization technology คือ Docker
+- เป็นระบบ Webservice API ที่พัฒนาด้วย Golang โดยใช้ Go web framework ที่ชื่อว่า Fiber
+- โดยระบบ Webservice API ใช้ Nginx ในทำการ Webserver, Reverse Proxy
+- มี Software ที่ช่วย Monitoring Webservice API เช่น Zabbix, Grafana
+- มี Software ที่ช่วย Backup File log เช่น Logrotate Linux
+- มี Software ที่ช่วยจัดการ Container ของ Docker เช่น Portainer
+- ใช้ฐานข้อมูล PostgreSQL และใช้ DBMS เช่น Adminer สำหรับการบริหารจัดการฐานข้อมูล
+- โดยระบบทั้งหมด Deploy บน Virtualization Technology คือ Docker
 
 ## Tech Stack in Project 
 
 - **Language**
-    - golang
+    - Golang
 - **Virtualization Technology**
-    - docker
+    - Docker
 - **Software Development**
-    - zabbix
-    - grafana
-    - portainer
-    - nginx
-    - logrotate
+    - Zabbix
+    - Grafana
+    - Portainer
+    - Nginx
+    - Logrotate
 - **Database**
-    - postgreSQL
+    - PostgreSQL
 - **Database Management System**
-    - adminer
+    - Adminer
 - **Web Application Firewall**
-    - modsecurity
+    - Modsecurity
 - **Other**
-    - loki 
-    - promtail
+    - Loki 
+    - Promtail
+
+ตัวอย่าง : FlowChart ของระบบ
 
 ![App Screenshot](./screenshots/flowchart.png)
-
 
 ## Get Started
 1. install Docker
@@ -49,9 +51,21 @@
 - [Integrating Zabbix with Grafana](https://linuxhint.com/integrating-zabbix-grafana/)
 
 ## Screenshots
+
+ตัวอย่าง : หน้า Dashboard ของ Portainer ที่ช่วยจัดการ Container ของ Docker
+
 ![App Screenshot](./screenshots/portainerio.png)
+
+ตัวอย่าง : หน้า Dashboard ของ Zabbix ที่ช่วย Monitoring Webservice API
+
 ![App Screenshot](./screenshots/zabbix2.png)
+
+ตัวอย่าง : หน้า Dashboard ของ Grafana ที่ช่วย Monitoring Webservice API
+
 ![App Screenshot](./screenshots/grafana2.png)
+
+ตัวอย่าง : หน้า Adminer สำหรับการบริหารจัดการฐานข้อมูล
+
 ![App Screenshot](./screenshots/adminer.png)
 
 ## Used By

@@ -6,8 +6,8 @@ services:
   nginx:
     container_name: ${ENV_NAME_NGINX}
     build:
-      dockerfile: nginx.Dockerfile
       context: .
+      dockerfile: nginx.Dockerfile
     image: ${ENV_IMAGE_NGINX}
     labels:
       logging: "promtail" # เพื่อแจ้งให้ promtail ทราบว่าบันทึกของคอนเทนเนอร์ล็อกนี้จะถูกคัดลอก
@@ -104,5 +104,7 @@ services:
 #####################################################################################
 networks:
   backend:
-    name: network
+    name: network_service
+    external: true # สิ่งนี้จะบอก Docker Compose ให้ถือว่า "เครือข่าย" ที่มีอยู่เป็นเครือข่ายภายนอก
+
 ######################################################################################

@@ -8,9 +8,9 @@ echo "-----------------[[ The system is installing Network Container ]]---------
 docker network create \
   --driver=bridge \
   --subnet=10.5.0.0/27 \
-  --ip-range=10.5.0.1/27 \
+  --ip-range=10.5.0.2/27 \
   --gateway=10.5.0.1 \
-  network
+  network_service
 
 echo "
 
@@ -42,6 +42,11 @@ echo "--------------------[[ The system is installing Container ]]--------------
 "
 cd ..
 
+# docker build -t nginx:nginx -f nginx.Dockerfile .
+docker-compose -f docker-compose.nginx.yml -p "nginx" up -d
+
+echo "--------------------------------------"
+
 docker-compose -f docker-compose.database.yml -p "database" up -d
 
 echo "--------------------------------------"
@@ -50,7 +55,8 @@ docker-compose -f docker-compose.zabbix.yml -p "zabbix" up -d
 
 echo "--------------------------------------"
 
-docker-compose -f docker-compose.grafana.yml -p "grafana" up -d
+docker-compose -f docker-compose.grafana.yml -p "grafana" up -dclear
+
 
 echo "--------------------------------------"
 
@@ -64,9 +70,6 @@ echo "--------------------------------------"
 
 docker-compose -f docker-compose.webservice_api.yml -p "webservice_api" up -d
 
-echo "--------------------------------------"
-
-docker-compose -f docker-compose.nginx.yml -p "nginx" up -d
 
 echo "
 
