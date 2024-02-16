@@ -17,7 +17,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
 
       - /var/run/docker.sock:/var/run/docker.sock
-      - /root/secrets/portainer_key:/run/secrets/portainer
+      # - /root/secrets/portainer_key:/run/secrets/portainer
       - ./portainer/data:/data
     restart: always
 #####################################################################################

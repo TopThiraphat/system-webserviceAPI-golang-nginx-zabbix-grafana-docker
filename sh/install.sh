@@ -8,7 +8,7 @@ echo "-----------------[[ The system is installing Network Container ]]---------
 docker network create \
   --driver=bridge \
   --subnet=10.5.0.0/27 \
-  --ip-range=10.5.0.2/27 \
+  --ip-range=10.5.0.0/27 \
   --gateway=10.5.0.1 \
   network_service
 
@@ -26,8 +26,8 @@ echo "-----------------[[ The system is Create file webservice API ]]-----------
 "
 cd ..
 cd webservice_api 
-go build web
-echo "file : webservice_api is up-to-date"
+# go build web
+# echo "file : webservice_api is up-to-date"
 echo "
 
 -----------------------------------------------------------------------
@@ -42,9 +42,6 @@ echo "--------------------[[ The system is installing Container ]]--------------
 "
 cd ..
 
-# docker build -t nginx:nginx -f nginx.Dockerfile .
-docker-compose -f docker-compose.nginx.yml -p "nginx" up -d
-
 echo "--------------------------------------"
 
 docker-compose -f docker-compose.database.yml -p "database" up -d
@@ -55,7 +52,7 @@ docker-compose -f docker-compose.zabbix.yml -p "zabbix" up -d
 
 echo "--------------------------------------"
 
-docker-compose -f docker-compose.grafana.yml -p "grafana" up -dclear
+docker-compose -f docker-compose.grafana.yml -p "grafana" up -d
 
 
 echo "--------------------------------------"
@@ -70,6 +67,9 @@ echo "--------------------------------------"
 
 docker-compose -f docker-compose.webservice_api.yml -p "webservice_api" up -d
 
+echo "--------------------------------------"
+
+docker-compose -f docker-compose.nginx.yml -p "nginx" up -d
 
 echo "
 

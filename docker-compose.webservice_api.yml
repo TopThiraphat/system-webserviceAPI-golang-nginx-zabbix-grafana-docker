@@ -6,10 +6,9 @@ services:
   webservice_api:
     container_name: ${ENV_NAME_WEBSERVICE_API}
     build:
-      dockerfile: webservice_api.Dockerfile
       context: .
-      target: prod
-    image: ${ENV_IMAGE_UBUNTU}
+      dockerfile: ./webservice_api.Dockerfile
+      # target: prod
     labels:
       logging: "promtail" # เพื่อแจ้งให้ promtail ทราบว่าบันทึกของคอนเทนเนอร์ล็อกนี้จะถูกคัดลอก
       logging_jobname: "containerlogs" # กำหนดคอนเทนเนอร์ล็อกให้กับป้ายกำกับงาน

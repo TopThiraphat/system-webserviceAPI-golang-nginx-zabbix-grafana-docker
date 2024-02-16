@@ -6,11 +6,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/etag"
-	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/gofiber/fiber/v2/middleware/helmet"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
-	"github.com/markbates/pkger"
 
 	domain "web/pkg/domain"
 	http "web/pkg/http"
@@ -176,9 +174,9 @@ func main() {
 	// API Place_T2_DepartureSecurity
 	http.Place_T2_DepartureSecurity(mount)
 
-	app.Use("/image", filesystem.New(filesystem.Config{
-		Root: pkger.Dir("/image"),
-	}))
+	// app.Use("/image", filesystem.New(filesystem.Config{
+	// 	Root: pkger.Dir("/image"),
+	// }))
 
 	// Start server
 	log.Fatal(app.Listen(":8085"))

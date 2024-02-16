@@ -7,8 +7,7 @@ services:
     container_name: ${ENV_NAME_NGINX}
     build:
       context: .
-      dockerfile: nginx.Dockerfile
-    image: ${ENV_IMAGE_NGINX}
+      dockerfile: ./nginx.Dockerfile
     labels:
       logging: "promtail" # เพื่อแจ้งให้ promtail ทราบว่าบันทึกของคอนเทนเนอร์ล็อกนี้จะถูกคัดลอก
       logging_jobname: "containerlogs" # กำหนดคอนเทนเนอร์ล็อกให้กับป้ายกำกับงาน

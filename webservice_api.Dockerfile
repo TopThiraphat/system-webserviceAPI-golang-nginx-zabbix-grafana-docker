@@ -1,3 +1,16 @@
+
+# FROM golang:1.18
+# RUN mkdir /app 
+# WORKDIR /app
+# COPY ./webservice_api/* ./
+# RUN go mod download
+# COPY . .
+# RUN go build -o /web
+# EXPOSE 8085
+# CMD ["/web"]
+
+
+
 ########################################################################
 FROM ubuntu:22.04 as base
 # FROM node:20-bullseye-slim as base
@@ -17,17 +30,6 @@ RUN apt-get update && \
     ln -fs /usr/share/zoneinfo/Asia/Bangkok /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata && \
     rm -rf /var/lib/apt/lists/*
-
-# RUN apt-get update && \
-#     apt-get install -y --no-install-recommends \
-#     vim \
-#     tini \
-#     htop && \
-#     ln -fs /usr/share/zoneinfo/Asia/Bangkok /etc/localtime && \
-#     dpkg-reconfigure -f noninteractive tzdata && \
-#     rm -rf /var/lib/apt/lists/*
-
-
 ########################################################################
 FROM base as prod
 CMD ["/app/web"]

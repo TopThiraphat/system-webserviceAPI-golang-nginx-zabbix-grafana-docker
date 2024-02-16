@@ -50,9 +50,8 @@ services:
   adminer:
     container_name: ${ENV_NAME_ADMINER}
     build:
-      dockerfile: adminer.Dockerfile
       context: .
-    image: ${ENV_IMAGE_ADMINER}
+      dockerfile: ./adminer.Dockerfile
     environment:
       # ADMINER_DEFAULT_SERVER: mysql_db_container
       ADMINER_DESIGN: dracula

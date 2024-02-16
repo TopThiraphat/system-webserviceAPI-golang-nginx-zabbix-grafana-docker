@@ -44,9 +44,8 @@ services:
   zabbix-web:
     container_name: ${ENV_NAME_ZABBIX_WEB}
     build:
-      dockerfile: zabbix_web.Dockerfile
       context: .
-    image: ${ENV_IMAGE_ZABBIX_WEB}
+      dockerfile: ./zabbix_web.Dockerfile
     networks:
       backend:
         ipv4_address: ${ENV_IP_ZABBIX_WEB}

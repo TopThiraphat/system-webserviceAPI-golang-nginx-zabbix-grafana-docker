@@ -1,0 +1,2 @@
+logrotate state -- version 2
+"/var/lib/docker/containers/nginx_webservice_api.access.log" 2024-2-16-18:35:57

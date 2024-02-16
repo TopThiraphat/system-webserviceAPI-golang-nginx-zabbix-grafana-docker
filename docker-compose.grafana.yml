@@ -6,9 +6,8 @@ services:
   grafana:
     container_name: ${ENV_NAME_GRAFANA}
     build:
-      dockerfile: grafana.Dockerfile
       context: .
-    image: ${ENV_IMAGE_GRAFANA}
+      dockerfile: ./grafana.Dockerfile
     environment:
       GF_DATABASE_TYPE: postgres
       GF_DATABASE_HOST: ${ENV_IP_DB_GRAFANA}:${ENV_DB_PORT}
@@ -38,9 +37,8 @@ services:
   loki:
     container_name: ${ENV_NAME_LOKI}
     build:
-      dockerfile: loki.Dockerfile
       context: .
-    image: ${ENV_IMAGE_LOKI}
+      dockerfile: ./loki.Dockerfile
     command: -config.file=/etc/loki/local-config.yaml
     volumes:
       - /etc/timezone:/etc/timezone:ro
