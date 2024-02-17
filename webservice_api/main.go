@@ -169,7 +169,7 @@ func main() {
 	// http://127.0.0.1:8085/api/v1/dmk/place_T2_DepartureSecurity
 
 	// API Place_T1_DepartureSecurity
-	// http.Place_T1_DepartureSecurity(mount)
+	http.Place_T1_DepartureSecurity(mount)
 
 	// API Place_T2_DepartureSecurity
 	http.Place_T2_DepartureSecurity(mount)
