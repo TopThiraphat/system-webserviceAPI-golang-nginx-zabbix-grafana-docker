@@ -65,7 +65,7 @@ docker-compose -f docker-compose.logrotate.yml -p "logrotate" up -d
 
 echo "--------------------------------------"
 
-docker-compose -f docker-compose.webservice_api.yml -p "webservice_api" up -d
+# docker-compose -f docker-compose.webservice_api.yml -p "webservice_api" up -d
 
 echo "--------------------------------------"
 
