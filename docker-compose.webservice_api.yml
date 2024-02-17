@@ -8,7 +8,7 @@ services:
     build:
       context: .
       dockerfile: ./webservice_api.Dockerfile
-      # target: prod
+      target: prod
     labels:
       logging: "promtail" # เพื่อแจ้งให้ promtail ทราบว่าบันทึกของคอนเทนเนอร์ล็อกนี้จะถูกคัดลอก
       logging_jobname: "containerlogs" # กำหนดคอนเทนเนอร์ล็อกให้กับป้ายกำกับงาน

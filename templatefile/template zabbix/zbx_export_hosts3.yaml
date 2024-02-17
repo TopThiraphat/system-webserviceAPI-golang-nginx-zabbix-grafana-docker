@@ -1,0 +1,17 @@
+zabbix_export:
+  version: '6.4'
+  host_groups:
+    - uuid: d790071f72fe4a618d97efd129911f14
+      name: 'Webservice API'
+  hosts:
+    - host: 'Webservice API'
+      name: 'Webservice API'
+      templates:
+        - name: 'RPTS Templates Health Check HTTP Status Code Error'
+      groups:
+        - name: 'Webservice API'
+      interfaces:
+        - interface_ref: if1
+      tags:
+        - tag: 'Webservice API'
+      inventory_mode: DISABLED

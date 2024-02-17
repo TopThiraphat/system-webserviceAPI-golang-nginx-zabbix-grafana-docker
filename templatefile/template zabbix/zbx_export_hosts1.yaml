@@ -1,0 +1,21 @@
+zabbix_export:
+  version: '6.4'
+  host_groups:
+    - uuid: 3e7149f83c244c7682e07af008ba3f20
+      name: 'Device Sensor XOVIS'
+  hosts:
+    - host: 'Sensor BKKMT4CISS-100'
+      name: 'Sensor BKKMT4CISS-100'
+      templates:
+        - name: 'Templates Health Check ICMP Ping'
+      groups:
+        - name: 'Device Sensor XOVIS'
+      interfaces:
+        - ip: 192.168.100.247
+          interface_ref: if1
+      tags:
+        - tag: BKK
+        - tag: Censor
+        - tag: 'Domestic Check-in'
+        - tag: PC2-UL
+      inventory_mode: DISABLED

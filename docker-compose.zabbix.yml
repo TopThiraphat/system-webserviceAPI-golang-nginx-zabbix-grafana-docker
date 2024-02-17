@@ -68,6 +68,9 @@ services:
       - ./zabbix/zabbix_web/modules/:/usr/share/zabbix/modules/:ro
     depends_on:
       - zabbix-server
+    ports:
+      - 8080:8080
+
     secrets:
       - db_zabbix_user
       - db_zabbix_password

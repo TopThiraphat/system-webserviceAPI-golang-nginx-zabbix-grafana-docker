@@ -1,0 +1,63 @@
+zabbix_export:
+  version: '6.4'
+  media_types:
+    - name: 'Line Notify'
+      type: WEBHOOK
+      parameters:
+        - name: Message
+          value: '{ALERT.MESSAGE}'
+        - name: Subject
+          value: '{ALERT.SUBJECT}'
+        - name: To
+          value: '{ALERT.SENDTO}'
+      script: |
+        try {
+            var params = JSON.parse(value);
+            var response,
+            request = new HttpRequest();
+            if (typeof params.HTTPProxy === 'string' && params.HTTPProxy.trim() !== '') {
+                request.setProxy(params.HTTPProxy);
+            }
+            request.addHeader('Content-Type: application/x-www-form-urlencoded');
+            request.addHeader('Authorization: Bearer ' + params.To);
+            var message = params.Subject+'\n'+params.Message;
+            response = request.post('https://notify-api.line.me/api/notify', 'message='+encodeURIComponent(message));
+            if (request.getStatus() !== 200) {
+                throw response;
+            }
+        } catch (error) {
+            response = error;
+        }
+        return JSON.stringify(response);
+      message_templates:
+        - event_source: TRIGGERS
+          operation_mode: PROBLEM
+          subject: '🔴 [{EVENT.STATUS}]'
+          message: |
+            ID : {EVENT.ID}
+            ปัญหา : {EVENT.NAME}
+            ระบบ : {HOST.NAME}
+            ความรุนแรง : {EVENT.SEVERITY}
+            
+            เกิดปัญหา 
+            เวลา :  {EVENT.TIME} 
+            วันที่ :  {EVENT.DATE}
+            
+            ข้อมูลเพิ่มเติม :
+            {$ZABBIX.URL}/tr_events.php?triggerid={TRIGGER.ID}&eventid={EVENT.ID}
+        - event_source: TRIGGERS
+          operation_mode: RECOVERY
+          subject: '🟢 [{EVENT.STATUS}]'
+          message: |
+            ID : {EVENT.ID}
+            ปัญหา : {EVENT.NAME}
+            ระบบ : {HOST.NAME}
+            ความรุนแรง : {EVENT.SEVERITY}
+            
+            แก้ไขปัญหา
+            เวลา : {EVENT.RECOVERY.TIME}
+            วันที่ : {EVENT.RECOVERY.DATE} 
+            ระยะเวลา: {EVENT.DURATION}
+            
+            ข้อมูลเพิ่มเติม :
+            {$ZABBIX.URL}/tr_events.php?triggerid={TRIGGER.ID}&eventid={EVENT.ID}

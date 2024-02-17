@@ -1,2 +1,2 @@
 logrotate state -- version 2
-"/var/lib/docker/containers/nginx_webservice_api.access.log" 2024-2-16-21:19:0
+"/var/lib/docker/containers/nginx_webservice_api.access.log" 2024-2-17-1:37:0

@@ -1,0 +1,13 @@
+zabbix_export:
+  version: '6.4'
+  template_groups:
+    - uuid: 8fd20a19ada44e2984120a6966115d3c
+      name: RPTS
+  templates:
+    - uuid: 8d45704aeca44caa9c08cfb79df2c202
+      template: 'RPTS Templates Health Check ICMP Ping'
+      name: 'RPTS Templates Health Check ICMP Ping'
+      templates:
+        - name: 'RPTS ICMP Ping'
+      groups:
+        - name: RPTS

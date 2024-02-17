@@ -1,0 +1,51 @@
+zabbix_export:
+  version: '6.4'
+  template_groups:
+    - uuid: 8fd20a19ada44e2984120a6966115d3c
+      name: RPTS
+  templates:
+    - uuid: 701d6968b09e44e1ba85023f3dabb2d7
+      template: 'RPTS Templates Health Check HTTP Status Code Error'
+      name: 'RPTS Templates Health Check HTTP Status Code Error'
+      groups:
+        - name: RPTS
+      httptests:
+        - uuid: d507499a7d254ede81c20a60d378a7b2
+          name: 'RPTS BKK : Web monitoring Webservice API {$WEB.API.URL}'
+          delay: 3s
+          agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36'
+          steps:
+            - name: 'Area : Place_T1_DepartureSecurity'
+              url: '{$LINK.URL.PLACE_T1_DEPARTURESECURITY}'
+            - name: 'Area : Place_T2_DepartureSecurity'
+              url: '{$LINK.URL.PLACE_T2_DEPARTURESECURITY}'
+      macros:
+        - macro: '{$LINK.URL.PLACE_T1_DEPARTURESECURITY}'
+          value: 'http://192.168.88.142:8085/api/v1/dmk/place_T1_DepartureSecurity'
+        - macro: '{$LINK.URL.PLACE_T2_DEPARTURESECURITY}'
+          value: 'http://192.168.88.142:8085/api/v1/dmk/place_T2_DepartureSecurity'
+        - macro: '{$WEB.API.URL}'
+          value: 'IP : 192.168.88.142:8085'
+  triggers:
+    - uuid: f28842d077b94a71a42cb6ddead417a3
+      expression: 'last(/RPTS Templates Health Check HTTP Status Code Error/web.test.rspcode[RPTS BKK : Web monitoring Webservice API {$WEB.API.URL},Area : Place_T1_DepartureSecurity])=404'
+      name: 'API down Area : Place_T1_DepartureSecurity'
+      priority: HIGH
+      description: 'URL link API problem'
+      manual_close: 'YES'
+      tags:
+        - tag: '404 Not Found'
+    - uuid: deac76dd2a644d50b27f94e6f1d9d613
+      expression: 'last(/RPTS Templates Health Check HTTP Status Code Error/web.test.rspcode[RPTS BKK : Web monitoring Webservice API {$WEB.API.URL},Area : Place_T2_DepartureSecurity])=404'
+      name: 'API down Area : Place_T2_DepartureSecurity'
+      priority: HIGH
+      description: 'URL link API problem'
+      manual_close: 'YES'
+      tags:
+        - tag: '404 Not Found'
+    - uuid: 83e17b0dc83f45619604554304ea6a72
+      expression: 'last(/RPTS Templates Health Check HTTP Status Code Error/web.test.fail[RPTS BKK : Web monitoring Webservice API {$WEB.API.URL}])<>0'
+      name: 'Internal Server Error'
+      priority: DISASTER
+      tags:
+        - tag: '500 Internal Server Error'

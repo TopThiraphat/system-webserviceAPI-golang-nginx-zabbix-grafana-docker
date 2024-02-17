@@ -21,11 +21,11 @@
       "url": "https://grafana.com"
     },
     "build": {
-      "time": 1700654587241,
+      "time": 1704893379920,
       "repo": "https://github.com/grafana/grafana-zabbix",
-      "branch": "master",
-      "hash": "d9ea3869dbc62f321e3017389c517102d3f3162b",
-      "build": 89
+      "branch": "main",
+      "hash": "a7c267202012e44b8db7c1bbec454ef90733f6d1",
+      "build": 109
     },
     "description": "Zabbix plugin for Grafana",
     "keywords": [
@@ -38,11 +38,11 @@
       },
       {
         "name": "Docs",
-        "url": "https://grafana.github.io/grafana-zabbix"
+        "url": "https://grafana.com/docs/plugins/alexanderzobnin-zabbix-app/latest/"
       },
       {
         "name": "License",
-        "url": "https://github.com/grafana/grafana-zabbix/blob/master/LICENSE"
+        "url": "https://github.com/grafana/grafana-zabbix/blob/main/LICENSE"
       }
     ],
     "logos": {
@@ -71,8 +71,8 @@
         "path": "img/screenshot-triggers.png"
       }
     ],
-    "updated": "2023-11-22",
-    "version": "4.4.4"
+    "updated": "2024-01-10",
+    "version": "4.4.5"
   },
   "name": "Zabbix",
   "type": "app"

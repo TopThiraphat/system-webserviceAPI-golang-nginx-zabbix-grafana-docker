@@ -1,0 +1,91 @@
+zabbix_export:
+  version: '6.4'
+  template_groups:
+    - uuid: 8fd20a19ada44e2984120a6966115d3c
+      name: RPTS
+  templates:
+    - uuid: 25049fd6062a403fb78f70dd6f5c456e
+      template: 'RPTS ICMP Ping'
+      name: 'RPTS ICMP Ping'
+      description: 'ICMP Ping RPTS'
+      groups:
+        - name: RPTS
+      items:
+        - uuid: a68aeb70d90b41e186cdf92ca590fcfe
+          name: 'ICMP: ICMP ping'
+          type: SIMPLE
+          key: icmpping
+          delay: 10s
+          history: 1w
+          triggers:
+            - uuid: 841896ab3c07486b8b659452c946ca02
+              expression: 'max(/RPTS ICMP Ping/icmpping,#3)=0'
+              name: 'Unable to connect device'
+              priority: DISASTER
+              description: 'ICMP: Unavailable by ICMP ping , Last three attempts returned timeout.  Please check device connectivity.'
+              tags:
+                - tag: scope
+                  value: availability
+        - uuid: 4e0ebf91a6954ef081282fb7403e6ff7
+          name: 'ICMP: ICMP loss'
+          type: SIMPLE
+          key: icmppingloss
+          delay: 10s
+          history: 1w
+          value_type: FLOAT
+          units: '%'
+          triggers:
+            - uuid: 17472ae40da94a6ca196ec36f78933ce
+              expression: 'min(/RPTS ICMP Ping/icmppingloss,5m)>{$ICMP_LOSS_WARN} and min(/RPTS ICMP Ping/icmppingloss,5m)<100'
+              name: 'High ICMP ping loss'
+              opdata: 'Loss: {ITEM.LASTVALUE1}'
+              status: DISABLED
+              priority: WARNING
+              description: 'High ICMP ping loss'
+              dependencies:
+                - name: 'Unable to connect device'
+                  expression: 'max(/RPTS ICMP Ping/icmpping,#3)=0'
+              tags:
+                - tag: scope
+                  value: availability
+                - tag: scope
+                  value: performance
+        - uuid: cfe991f94e3346ab8e9860ac80ac0f87
+          name: 'ICMP: ICMP response time'
+          type: SIMPLE
+          key: icmppingsec
+          delay: 10s
+          history: 1w
+          value_type: FLOAT
+          units: s
+          triggers:
+            - uuid: e7722752b17943178c0907f73adc596d
+              expression: 'avg(/RPTS ICMP Ping/icmppingsec,5m)>{$ICMP_RESPONSE_TIME_WARN}'
+              name: 'High ICMP ping response time'
+              opdata: 'Value: {ITEM.LASTVALUE1}'
+              status: DISABLED
+              priority: WARNING
+              description: 'High ICMP ping response time'
+              dependencies:
+                - name: 'High ICMP ping loss'
+                  expression: 'min(/RPTS ICMP Ping/icmppingloss,5m)>{$ICMP_LOSS_WARN} and min(/RPTS ICMP Ping/icmppingloss,5m)<100'
+                - name: 'Unable to connect device'
+                  expression: 'max(/RPTS ICMP Ping/icmpping,#3)=0'
+              tags:
+                - tag: scope
+                  value: availability
+                - tag: scope
+                  value: performance
+      macros:
+        - macro: '{$ICMP_LOSS_WARN}'
+          value: '20'
+        - macro: '{$ICMP_RESPONSE_TIME_WARN}'
+          value: '0.15'
+      valuemaps:
+        - uuid: 5bafbe418aac4e13a8a8743af01b3f82
+          name: 'Service state'
+          mappings:
+            - value: '0'
+              newvalue: Down
+            - value: '1'
+              newvalue: Up
